@@ -24,11 +24,13 @@ import Testimonial from "./Testimonial";
 import Impacts from "./Impacts";
 import BlogsSection from "../Components/BlogSection";
 import ImagePage from "./Image";
-import PageWrapper from "../Layout/Pagewrapper";
+import Footer from "../Layout/Footer";
+import Header from "../Layout/Header";
 
 const Hero = () => {
   return (
-    <PageWrapper>
+    <Box>
+      <Header />
       <Box bg="gray.50">
         {/* HERO SECTION */}
         <Box
@@ -215,7 +217,8 @@ const Hero = () => {
           <Testimonial />
         </Box>
       </Box>
-    </PageWrapper>
+      <Footer />
+    </Box>
   );
 };
 

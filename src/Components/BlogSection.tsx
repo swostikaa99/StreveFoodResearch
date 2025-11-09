@@ -127,7 +127,7 @@ const BlogsSection = ({
   return (
     <Box
       bgGradient={bgGradient}
-      py={{ base: 16, md: 24 }}
+      py={{ base: 6, md: 10 }}
       px={{ base: 6, md: 10 }}
     >
       <Container maxW="7xl">
@@ -174,6 +174,10 @@ const BlogsSection = ({
               bg={cardBg}
               transition="all 0.3s ease"
               _hover={{ transform: "translateY(-5px)", boxShadow: "lg" }}
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              h="100%" // ensures card stretches evenly
             >
               <Image
                 src={post.image}
@@ -182,8 +186,8 @@ const BlogsSection = ({
                 h="220px"
                 objectFit="cover"
               />
-              <Box p={6}>
-                <VStack align="start" spacing={3}>
+              <Box p={6} flex="1" display="flex" flexDirection="column">
+                <VStack align="start" spacing={3} flex="1">
                   <HStack justify="space-between" w="full">
                     <Badge colorScheme="teal" variant="subtle">
                       {post.category}
@@ -194,20 +198,23 @@ const BlogsSection = ({
                     </HStack>
                   </HStack>
 
-                  <Heading
-                    as="h3"
-                    fontSize="xl"
-                    fontWeight="semibold"
-                    color={titleCol}
-                    transition="color 0.3s ease"
-                    _hover={{ color: "teal.500" }}
-                  >
-                    {post.title}
-                  </Heading>
-
-                  <Text fontSize="sm" color={textCol}>
-                    {post.description}
-                  </Text>
+                  {/* Fixed height container for title & description */}
+                  <Box flex="1" minH="150px">
+                    <Heading
+                      as="h3"
+                      fontSize="xl"
+                      fontWeight="semibold"
+                      color={titleCol}
+                      transition="color 0.3s ease"
+                      _hover={{ color: "teal.500" }}
+                      mb={2}
+                    >
+                      {post.title}
+                    </Heading>
+                    <Text fontSize="sm" color={textCol}>
+                      {post.description}
+                    </Text>
+                  </Box>
 
                   <HStack
                     justify="space-between"

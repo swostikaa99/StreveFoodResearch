@@ -5,17 +5,21 @@ import PageWrapper from "../Layout/Pagewrapper";
 
 export default function About() {
   const textMuted = useColorModeValue("gray.600", "gray.300");
+  const bgGradient = useColorModeValue(
+    "linear(to-b, gray.50, teal.50)",
+    "linear(to-b, gray.900, teal.900)"
+  );
 
   return (
     <PageWrapper>
-      <Box>
+      <Box bgGradient={bgGradient}>
         <AboutComponent />
 
         <Box
           maxW="7xl"
           mx="auto"
-          px={{ base: 6, md: 10 }}
-          mt={{ base: 16, md: 24 }}
+          px={{ base: 2, md: 5 }}
+          // mt={{ base: 16, md: 24 }}
         >
           <Text fontSize="lg" color={textMuted} lineHeight="tall" mb={4}>
             At Strive Food Research & Training, our vision is to become the

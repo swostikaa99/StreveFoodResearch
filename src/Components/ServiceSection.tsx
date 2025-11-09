@@ -25,8 +25,8 @@ import researchImage from "../assets/research-image.jpg";
 import consultancyImage from "../assets/consultancy-image.jpg";
 
 interface ServicesSectionProps {
-  showAll?: boolean; // true = services page
-  showPagination?: boolean; // true = enable pagination
+  showAll?: boolean;
+  showPagination?: boolean;
 }
 
 const ServicesSection = ({
@@ -85,94 +85,8 @@ const ServicesSection = ({
         "Capacity Building",
       ],
     },
-    {
-      icon: FaGraduationCap,
-      color: "teal.500",
-      title: "Training Programs",
-      description:
-        "Comprehensive food safety and quality management training for industry professionals.",
-      image: trainingImage,
-      features: [
-        "HACCP Certification",
-        "Food Safety Management",
-        "Quality Assurance",
-        "Regulatory Compliance",
-      ],
-    },
-    {
-      icon: FaMicroscope,
-      color: "orange.400",
-      title: "Research & Development",
-      description:
-        "Cutting-edge food science research to advance industry standards and innovation.",
-      image: researchImage,
-      features: [
-        "Product Development",
-        "Nutritional Analysis",
-        "Shelf Life Studies",
-        "Sensory Evaluation",
-      ],
-    },
-    {
-      icon: FaUsers,
-      color: "blue.500",
-      title: "Consultancy Services",
-      description:
-        "Expert guidance on food business operations, compliance, and best practices.",
-      image: consultancyImage,
-      features: [
-        "Regulatory Compliance",
-        "Process Optimization",
-        "Quality Systems",
-        "Capacity Building",
-      ],
-    },
-    {
-      icon: FaGraduationCap,
-      color: "teal.500",
-      title: "Training Programs",
-      description:
-        "Comprehensive food safety and quality management training for industry professionals.",
-      image: trainingImage,
-      features: [
-        "HACCP Certification",
-        "Food Safety Management",
-        "Quality Assurance",
-        "Regulatory Compliance",
-      ],
-    },
-    {
-      icon: FaMicroscope,
-      color: "orange.400",
-      title: "Research & Development",
-      description:
-        "Cutting-edge food science research to advance industry standards and innovation.",
-      image: researchImage,
-      features: [
-        "Product Development",
-        "Nutritional Analysis",
-        "Shelf Life Studies",
-        "Sensory Evaluation",
-      ],
-    },
-    {
-      icon: FaUsers,
-      color: "blue.500",
-      title: "Consultancy Services",
-      description:
-        "Expert guidance on food business operations, compliance, and best practices.",
-      image: consultancyImage,
-      features: [
-        "Regulatory Compliance",
-        "Process Optimization",
-        "Quality Systems",
-        "Capacity Building",
-      ],
-    },
-    // add more if needed
   ];
 
-  // Pagination setup
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(services.length / itemsPerPage);
@@ -192,6 +106,7 @@ const ServicesSection = ({
       w="100%"
     >
       <Box maxW="7xl" mx="auto" w="full">
+        {/* Section Header */}
         <VStack spacing={4} textAlign="center" mb={16}>
           <Text
             bg="teal.100"
@@ -213,6 +128,7 @@ const ServicesSection = ({
           </Text>
         </VStack>
 
+        {/* Service Cards */}
         <Grid
           templateColumns={{
             base: "1fr",
@@ -222,8 +138,9 @@ const ServicesSection = ({
           gap={10}
         >
           {displayedServices.map((service, i) => (
-            <Box
+            <Flex
               key={i}
+              direction="column"
               bg={cardBg}
               rounded="xl"
               shadow="md"
@@ -236,7 +153,9 @@ const ServicesSection = ({
                 transform: "translateY(-5px)",
                 bg: cardHover,
               }}
+              h="100%"
             >
+              {/* Image Section */}
               <Box position="relative" h="220px" overflow="hidden">
                 <Image
                   src={service.image}
@@ -257,7 +176,8 @@ const ServicesSection = ({
                 </Box>
               </Box>
 
-              <Box p={{ base: 5, md: 6 }}>
+              {/* Content Section */}
+              <Flex direction="column" p={{ base: 5, md: 6 }} flex="1">
                 <Heading
                   as="h3"
                   size="lg"
@@ -270,7 +190,7 @@ const ServicesSection = ({
                   {service.description}
                 </Text>
 
-                <VStack align="start" spacing={2} mb={6}>
+                <VStack align="start" spacing={2} mb={6} flex="1">
                   {service.features.map((feature, idx) => (
                     <Flex key={idx} align="center" gap={2}>
                       <Box w={2} h={2} bg="teal.400" borderRadius="full" />
@@ -287,6 +207,7 @@ const ServicesSection = ({
                   colorScheme="teal"
                   rightIcon={<FaArrowRight />}
                   onClick={() => navigate(`/ServiceId/${i}`)}
+                  mt="auto"
                   _hover={{
                     bg: "teal.500",
                     color: "white",
@@ -295,12 +216,12 @@ const ServicesSection = ({
                 >
                   Learn More
                 </Button>
-              </Box>
-            </Box>
+              </Flex>
+            </Flex>
           ))}
         </Grid>
 
-        {/* Pagination only on Services Page */}
+        {/* Pagination */}
         {showPagination && totalPages > 1 && (
           <Flex justify="center" align="center" mt={10} gap={3}>
             <Button
