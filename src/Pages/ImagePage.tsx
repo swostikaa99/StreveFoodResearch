@@ -1,5 +1,5 @@
 import React from "react";
-import Image from "../Components/Image";
+import Image from "../Pages/Image";
 
 export default function ImagePage() {
   return (
