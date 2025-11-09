@@ -31,7 +31,7 @@ const Hero = () => {
   return (
     <Box>
       <Header />
-      <Box bg="gray.50">
+      <Box bg="gray.50 fff">
         {/* HERO SECTION */}
         <Box
           as="section"
