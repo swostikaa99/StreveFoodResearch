@@ -8,7 +8,7 @@ import Image from "./Pages/Image";
 import Blogs from "./Pages/Blogs";
 import Testimonial from "./Pages/Testimonial";
 import Impacts from "./Pages/Impacts";
-import ServiceId from "./Components/Serviceid";
+import ServiceId from "./Components/ServiceId";
 export default function AllRoutes() {
   return (
     <div>

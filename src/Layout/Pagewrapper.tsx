@@ -3,7 +3,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { Box } from "@chakra-ui/react";
 
-const PageWrapper = ({ children }) => {
+const PageWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box minH="100vh">
       <Header />

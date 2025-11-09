@@ -30,7 +30,7 @@ interface ImageItem {
 }
 
 interface ImagesProps {
-  isHomePage?: boolean; // true => Home, false => Research Page
+  isHomePage?: boolean;
 }
 
 const images: ImageItem[] = [
@@ -75,7 +75,7 @@ const images: ImageItem[] = [
   },
 ];
 
-const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
+const Images = ({ isHomePage = false }: ImagesProps) => {
   const bgGradient = useColorModeValue(
     "linear(to-b, gray.50, teal.50)",
     "linear(to-b, gray.900, teal.900)"
@@ -92,10 +92,8 @@ const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
   const displayedImages = isHomePage ? images.slice(0, 3) : paginatedImages;
 
-  // ----- CONTENT (shared for both Home + Research page) -----
   const content = (
     <Box bgGradient={bgGradient} py={{ base: 10, md: 16 }}>
       <Container maxW="7xl" p={{ base: 8, md: 10 }}>
@@ -130,7 +128,6 @@ const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
           </Text>
         </Box>
 
-        {/* Image Grid */}
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={8}>
           {displayedImages.map((image) => (
             <Box
@@ -142,10 +139,7 @@ const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
               borderColor={borderCol}
               bg={cardBg}
               transition="all 0.3s ease"
-              _hover={{
-                transform: "translateY(-4px)",
-                boxShadow: "lg",
-              }}
+              _hover={{ transform: "translateY(-4px)", boxShadow: "lg" }}
             >
               <AspectRatio ratio={4 / 3}>
                 <Image
@@ -156,7 +150,6 @@ const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
                   _hover={{ transform: "scale(1.05)" }}
                 />
               </AspectRatio>
-
               <Box p={5}>
                 <Heading
                   as="h3"
@@ -176,7 +169,6 @@ const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
           ))}
         </SimpleGrid>
 
-        {/* “View More” button on Home */}
         {isHomePage && (
           <Flex justify="right" mt={12}>
             <Link
@@ -192,7 +184,6 @@ const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
           </Flex>
         )}
 
-        {/* Pagination for Research Page */}
         {!isHomePage && totalPages > 1 && (
           <Flex justify="center" mt={10} gap={4}>
             <Button
@@ -220,7 +211,6 @@ const Images = ({ isHomePage = false }: ImagesProps): JSX.Element => {
     </Box>
   );
 
-  // ✅ Only wrap with PageWrapper when NOT on Home page
   return isHomePage ? content : <PageWrapper>{content}</PageWrapper>;
 };
 
