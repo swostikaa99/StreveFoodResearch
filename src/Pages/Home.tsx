@@ -26,12 +26,28 @@ import BlogsSection from "../Components/BlogSection";
 import ImagePage from "./Image";
 import Footer from "../Layout/Footer";
 import Header from "../Layout/Header";
+import OurTeams from "../Components/OurTeams";
+import ProjectSection from "../Components/ProjectSection";
+
+// FIX: Define consistent header and footer heights
+const headerHeight = 80; // adjust if needed
+const footerHeight = 200; // adjust if needed
 
 const Hero = () => {
   return (
-    <Box>
+    <Box overflowX="hidden" w="100vw" position="relative">
+      {/* HEADER */}
       <Header />
-      <Box bg="gray.50 fff">
+
+      {/* MAIN WRAPPER */}
+      <Box
+        bg="gray.50"
+        minH={`calc(100vh - ${headerHeight + footerHeight}px)`}
+        pt={`${headerHeight}px`}
+        pb={`${footerHeight}px`}
+        overflowX="hidden"
+        w="100vw"
+      >
         {/* HERO SECTION */}
         <Box
           as="section"
@@ -41,30 +57,37 @@ const Hero = () => {
           flexDirection="column"
           justifyContent="center"
           overflow="hidden"
-          px={{ base: 6, md: 12, lg: 20 }}
-          py={{ base: 10, md: 16, lg: 24 }}
+          maxW="100vw"
+          px={{ base: 4, sm: 6, md: 12, lg: 20 }}
+          py={{ base: 14, sm: 16, md: 20, lg: 24 }}
         >
+          {/* Background Image */}
           <Image
             src={HeroBackground}
             alt="Food research laboratory"
             objectFit="cover"
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
             w="100%"
             h="100%"
-            position="absolute"
-            top="0"
-            left="0"
             zIndex="0"
           />
 
           {/* Overlay */}
           <Box
             position="absolute"
-            inset="0"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
             bgGradient="linear(to-r, rgba(0, 100, 80, 0.9), rgba(0, 120, 90, 0.8), transparent)"
             zIndex="1"
           />
 
-          {/* MAIN CONTENT */}
+          {/* HERO CONTENT */}
           <Box
             position="relative"
             zIndex="2"
@@ -76,27 +99,8 @@ const Hero = () => {
             <Stack
               spacing={8}
               maxW={{ base: "full", md: "3xl" }}
-              textAlign={{ base: "left", md: "left" }}
+              textAlign="left"
             >
-              {/* Badge */}
-              {/* <Flex
-              align="center"
-              bg="whiteAlpha.300"
-              border="1px solid"
-              borderColor="whiteAlpha.400"
-              px={4}
-              py={2}
-              w="fit-content"
-              rounded="full"
-              backdropFilter="blur(6px)"
-            >
-              <Box w={4} h={4} bg="orange.400" borderRadius="full" mr={3} />
-              <Text fontSize="sm" fontWeight="medium" color="whiteAlpha.900">
-                Established 2020 | Bhaktapur, Nepal
-              </Text>
-            </Flex> */}
-
-              {/* Heading */}
               <Heading
                 fontSize={useBreakpointValue({
                   base: "3xl",
@@ -110,13 +114,12 @@ const Hero = () => {
                 Elevating Food Safety Through Science & Training
               </Heading>
 
-              {/* Description */}
               <Text fontSize={{ base: "md", md: "xl" }} color="whiteAlpha.900">
-                Expert food & beverage consulting, research, and capacity
-                building services for Nepal's growing food industry.
+                Empowering Nepal’s Food Industries through Research & Innovation
+                Driving Quality, Safety & Sustainability in Every Product We
+                Create
               </Text>
 
-              {/* Buttons */}
               <Flex gap={4} flexWrap="wrap">
                 <Button
                   rightIcon={<FaArrowRight />}
@@ -128,15 +131,18 @@ const Hero = () => {
                     boxShadow: "lg",
                   }}
                   size="lg"
+                  w={{ base: "100%", sm: "auto" }}
                 >
                   Explore Our Services
                 </Button>
+
                 <Button
                   variant="outline"
                   borderColor="white"
                   color="white"
                   _hover={{ bg: "white", color: "teal.700" }}
                   size="lg"
+                  w={{ base: "100%", sm: "auto" }}
                 >
                   Contact Us
                 </Button>
@@ -152,13 +158,10 @@ const Hero = () => {
               }}
               gap={6}
               mt={16}
+              overflow="hidden"
             >
               {[
-                {
-                  icon: FaFlask,
-                  number: "500+",
-                  label: "Research Projects",
-                },
+                { icon: FaFlask, number: "500+", label: "Research Projects" },
                 {
                   icon: FaGraduationCap,
                   number: "1000+",
@@ -177,10 +180,11 @@ const Hero = () => {
                     border="1px solid"
                     borderColor="whiteAlpha.300"
                     rounded="lg"
-                    p={6}
+                    p={{ base: 4, md: 6 }}
                     _hover={{ bg: "whiteAlpha.300" }}
                     transition="0.3s"
                     textAlign="center"
+                    overflow="hidden"
                   >
                     <Icon
                       as={stat.icon}
@@ -198,25 +202,17 @@ const Hero = () => {
             </Grid>
           </Box>
         </Box>
-        <Box>
-          <About />
-        </Box>
-        <Box>
-          <ServicesSection showAll={false} showPagination={false} />
-        </Box>
-        <Box>
-          <BlogsSection showAll={false} showPagination={false} />
-        </Box>
-        <Box>
-          <ImagePage isHomePage />
-        </Box>
-        <Box>
-          <Impacts />
-        </Box>
-        <Box>
-          <Testimonial />
-        </Box>
+
+        <About />
+        <ServicesSection showAll={false} showPagination={false} />
+        <BlogsSection showAll={false} showPagination={false} />
+        <ImagePage isHomePage />
+        <ProjectSection limit={3} />
+        <OurTeams showAll={false} />
+        <Impacts />
+        <Testimonial />
       </Box>
+
       <Footer />
     </Box>
   );

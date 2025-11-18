@@ -20,26 +20,7 @@ function App() {
       <Box>
         {/* <Header /> */}
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Service />} />
-          <Route path="/images" element={<Image />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/Testimonial" element={<Testimonial />} />
-          <Route path="/Impacts" element={<Impacts />} />
-
-          <Route path="/ServiceId/:id" element={<ServiceId />} />
-          {/* 
-       
-        <Route path="/enroll" element={<Enroll />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/about" element={<About />} />
-        
-        <Route path="/blogs/:id" element={<BlogDetailPage />} /> */}
-        </Routes>
+        <AllRoutes />
         {/* <Home /> */}
         {/* <Footer /> */}
       </Box>

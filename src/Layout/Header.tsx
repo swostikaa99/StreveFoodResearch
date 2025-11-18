@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Flex,
@@ -11,7 +11,7 @@ import {
   Collapse,
   useDisclosure,
 } from "@chakra-ui/react";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/Strivelogo.jpg";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -24,6 +24,7 @@ const Header = () => {
     { name: "About", href: "/about" },
     { name: "Services", href: "/services" },
     { name: "Blogs", href: "/blogs" },
+    { name: "Projects", href: "/project" },
     { name: "Images", href: "/images" },
     { name: "Contact", href: "/contact" },
   ];
@@ -41,23 +42,19 @@ const Header = () => {
       zIndex="999"
       boxShadow="sm"
     >
+      {/* === TOP BAR === */}
       <Box maxW="1200px" mx="auto" px={4}>
         <Flex align="center" justify="space-between" h="20">
-          {/* ✅ Logo */}
           <Image
             src={logo}
             alt="Strive Food Research Logo"
             height="65px"
             objectFit="contain"
-            style={{
-              background: "transparent",
-              mixBlendMode: "multiply",
-            }}
+            style={{ mixBlendMode: "multiply" }}
           />
 
-          {/* ✅ Desktop Navigation */}
+          {/* Desktop Nav */}
           <HStack
-            as="nav"
             spacing={10}
             display={{ base: "none", md: "flex" }}
             align="center"
@@ -68,7 +65,7 @@ const Header = () => {
                 href={item.href}
                 fontWeight="500"
                 color="gray.700"
-                _hover={{ color: "teal.500", textDecoration: "none" }}
+                _hover={{ color: "teal.500" }}
               >
                 {item.name}
               </Link>
@@ -76,48 +73,54 @@ const Header = () => {
             <Button colorScheme="teal">Get Started</Button>
           </HStack>
 
-          {/* ✅ Mobile Menu Button */}
+          {/* Mobile Menu Button */}
           <IconButton
             aria-label="Toggle Menu"
             icon={isOpen ? <FaTimes /> : <FaBars />}
             variant="ghost"
             display={{ base: "flex", md: "none" }}
             onClick={onToggle}
+            fontSize="2xl"
           />
         </Flex>
-
-        {/* ✅ Mobile Navigation */}
-        <Collapse in={isOpen} animateOpacity>
-          <VStack
-            as="nav"
-            py={4}
-            spacing={4}
-            display={{ md: "none" }}
-            borderTop="1px solid"
-            borderColor="gray.200"
-          >
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                fontWeight="500"
-                color="gray.700"
-                _hover={{ color: "teal.500", textDecoration: "none" }}
-                onClick={onToggle}
-              >
-                {item.name}
-              </Link>
-            ))}
-            <Button
-              colorScheme="teal"
-              w="full"
-              onClick={() => navigate("/contact")}
-            >
-              Get Started
-            </Button>
-          </VStack>
-        </Collapse>
       </Box>
+
+      <Collapse in={isOpen} animateOpacity>
+        <VStack
+          spacing={5}
+          py={6}
+          bg="white"
+          w="100%"
+          align="center"
+          display={{ base: "flex", md: "none" }}
+          borderTop="1px solid"
+          borderColor="gray.200"
+        >
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              fontWeight="500"
+              color="gray.700"
+              _hover={{ color: "teal.500" }}
+              onClick={onToggle}
+            >
+              {item.name}
+            </Link>
+          ))}
+
+          <Button
+            colorScheme="teal"
+            w="80%"
+            onClick={() => {
+              onToggle();
+              navigate("/contact");
+            }}
+          >
+            Get Started
+          </Button>
+        </VStack>
+      </Collapse>
     </Box>
   );
 };

@@ -9,64 +9,54 @@ import {
   useColorModeValue,
   Flex,
   Link,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-
-import research1 from "../assets/research-1.jpg";
-import research2 from "../assets/research-2.jpg";
-import research3 from "../assets/research-3.jpg";
-import research4 from "../assets/research-4.jpg";
-import research5 from "../assets/research-5.jpg";
-import research6 from "../assets/research-6.jpg";
-
-const allImages = [
-  {
-    id: 1,
-    src: research1,
-    title: "Laboratory Analysis",
-    description: "Fresh produce quality testing in our state-of-the-art lab.",
-  },
-  {
-    id: 2,
-    src: research2,
-    title: "Sustainable Agriculture",
-    description: "Controlled environment research for optimal crop growth.",
-  },
-  {
-    id: 3,
-    src: research3,
-    title: "Food Quality Testing",
-    description:
-      "Microscopic examination of food samples for quality assurance.",
-  },
-  {
-    id: 4,
-    src: research4,
-    title: "Nutritional Research",
-    description: "Analyzing nutritional content of various food sources.",
-  },
-  {
-    id: 5,
-    src: research5,
-    title: "Hydroponic Systems",
-    description:
-      "Modern agricultural technology for sustainable food production.",
-  },
-  {
-    id: 6,
-    src: research6,
-    title: "Food Science",
-    description: "Laboratory research documentation and analysis.",
-  },
-];
+import { useEffect, useState } from "react";
 
 const ImagesSection = () => {
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const titleCol = useColorModeValue("gray.800", "white");
   const textCol = useColorModeValue("gray.600", "gray.300");
   const borderCol = useColorModeValue("gray.200", "gray.700");
   const cardBg = useColorModeValue("white", "gray.800");
 
-  const images = allImages.slice(0, 3); // only first 3 for homepage
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/page/alias/gallery");
+        const json = await res.json();
+
+        if (json.success && json.data?.children) {
+          const apiImages = json.data.children.map((item) => ({
+            id: item.id,
+            src: item.thumb,
+            title: item.name,
+            description: item.details.replace(/<[^>]+>/g, ""), // remove HTML tags
+          }));
+
+          setImages(apiImages.slice(0, 3)); // same as before — show only first 3
+        }
+      } catch (err) {
+        console.error("Error loading gallery:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGallery();
+  }, []);
+
+  if (loading) {
+    return (
+      <Center py={20}>
+        <Spinner size="xl" color="teal.500" />
+      </Center>
+    );
+  }
 
   return (
     <Box py={{ base: 12, md: 20 }}>

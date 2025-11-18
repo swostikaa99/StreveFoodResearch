@@ -7,42 +7,71 @@ import {
   Stack,
   Icon,
   useColorModeValue,
+  Link,
+  Spinner,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 import { FaAward, FaBullseye, FaUsers, FaChartLine } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const About = () => {
-  const values = [
-    {
-      icon: FaAward,
-      title: "Excellence",
-      description:
-        "Committed to the highest standards in food safety and quality research.",
-    },
-    {
-      icon: FaBullseye,
-      title: "Innovation",
-      description:
-        "Pioneering new methodologies and solutions for the food industry.",
-    },
-    {
-      icon: FaUsers,
-      title: "Collaboration",
-      description:
-        "Building partnerships to strengthen Nepal's food sector capacity.",
-    },
-    {
-      icon: FaChartLine,
-      title: "Growth",
-      description:
-        "Empowering businesses through knowledge transfer and training.",
-    },
-  ];
+interface AboutProps {
+  showAll?: boolean; // true = full About page
+}
+
+const iconMap: any = {
+  Integrity: FaAward,
+  Innovation: FaBullseye,
+  Quality: FaUsers,
+  Collaboration: FaChartLine,
+  Sustainability: FaChartLine,
+  Intigrity: FaAward,
+};
+
+const About = ({ showAll = false }: AboutProps) => {
+  const [page, setPage] = useState<any>(null);
+  const [whoWeAre, setWhoWeAre] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadingWho, setLoadingWho] = useState(true);
 
   const textMuted = useColorModeValue("gray.600", "gray.300");
   const bgGradient = useColorModeValue(
     "linear(to-b, gray.50, teal.50)",
     "linear(to-b, gray.900, teal.900)"
   );
+
+  // ===========================
+  //      FETCH ABOUT DATA
+  // ===========================
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/page/alias/about-us")
+      .then((res) => {
+        setPage(res.data.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  // Fetch Who We Are data
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/page/alias/who-we-are")
+      .then((res) => {
+        setWhoWeAre(res.data.data);
+        setLoadingWho(false);
+      })
+      .catch(() => setLoadingWho(false));
+  }, []);
+
+  if (loading || loadingWho)
+    return (
+      <Flex w="100%" justify="center" py={20}>
+        <Spinner size="xl" color="teal.500" />
+      </Flex>
+    );
+
+  if (!page || !whoWeAre) return null;
 
   return (
     <Box
@@ -55,10 +84,12 @@ const About = () => {
       px={{ base: 6, md: 10 }}
     >
       <Box maxW="7xl" mx="auto" w="full">
+        {/* GRID LAYOUT */}
         <Grid
           templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }}
           gap={{ base: 10, lg: 16 }}
           alignItems="center"
+          position="relative"
         >
           {/* LEFT SIDE */}
           <Box>
@@ -76,6 +107,7 @@ const About = () => {
               About Us
             </Box>
 
+            {/* API Title */}
             <Heading
               as="h2"
               fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
@@ -83,115 +115,155 @@ const About = () => {
               mb={6}
               color={useColorModeValue("gray.800", "white")}
             >
-              Leading Food Research & Training in Nepal
+              {page.title}
             </Heading>
 
-            <Text fontSize="lg" color={textMuted} mb={4} lineHeight="tall">
-              Established in 2020 and based in Bhaktapur/Suryabinayak, Strive
-              Food Research & Training (Pvt. Ltd.) has emerged as Nepal's
-              premier organization for food & beverage consulting and training
-              services.
-            </Text>
-            <Text fontSize="lg" color={textMuted} mb={6} lineHeight="tall">
-              Our mission is to elevate food safety standards, enhance industry
-              competence, and drive innovation through evidence-based research
-              and comprehensive capacity building programs.
-            </Text>
+            {/* API HTML details */}
+            <Box
+              fontSize="lg"
+              color={textMuted}
+              mb={6}
+              lineHeight="tall"
+              dangerouslySetInnerHTML={{ __html: page.details }}
+            />
 
-            {/* FEATURE HIGHLIGHTS */}
-            <Stack spacing={5}>
-              <Flex align="start" gap={4}>
-                <Box
-                  w={12}
-                  h={12}
-                  bg="teal.100"
-                  rounded="lg"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  flexShrink={0}
-                >
-                  <Icon as={FaAward} w={6} h={6} color="teal.600" />
-                </Box>
-                <Box>
-                  <Heading as="h3" size="md" mb={1}>
-                    Expert Team
-                  </Heading>
-                  <Text color={textMuted}>
-                    Highly qualified food scientists and industry professionals.
-                  </Text>
-                </Box>
-              </Flex>
+            {/* ONLY FIRST PARAGRAPH OF "WHO WE ARE" */}
+            <Box>
+              <Heading
+                as="h3"
+                fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+                fontWeight="semi-bold"
+                mb={6}
+                color={useColorModeValue("gray.800", "white")}
+              >
+                {whoWeAre.title}
+              </Heading>
 
-              <Flex align="start" gap={4}>
-                <Box
-                  w={12}
-                  h={12}
-                  bg="orange.100"
-                  rounded="lg"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  flexShrink={0}
-                >
-                  <Icon as={FaBullseye} w={6} h={6} color="orange.600" />
-                </Box>
-                <Box>
-                  <Heading as="h3" size="md" mb={1}>
-                    Modern Facilities
-                  </Heading>
-                  <Text color={textMuted}>
-                    State-of-the-art research and training infrastructure.
-                  </Text>
-                </Box>
-              </Flex>
-            </Stack>
+              {/* Render all paragraphs from API */}
+              <Box
+                fontSize="lg"
+                color={textMuted}
+                mb={2}
+                lineHeight="tall"
+                dangerouslySetInnerHTML={{ __html: whoWeAre.details }}
+              />
+            </Box>
           </Box>
 
-          {/* RIGHT SIDE: VALUE CARDS */}
+          {/* RIGHT SIDE ICON GRID */}
           <Grid
             templateColumns={{ base: "1fr", sm: "repeat(2, 1fr)" }}
             gap={{ base: 6, md: 8 }}
           >
-            {values.map((value, index) => (
-              <Box
-                key={index}
-                p={{ base: 5, md: 6 }}
-                rounded="lg"
-                borderWidth={2}
-                borderColor="gray.200"
-                bg="white"
-                boxShadow="sm"
-                _hover={{
-                  boxShadow: "lg",
-                  transform: "translateY(-5px)",
-                  borderColor: "teal.300",
-                }}
-                transition="all 0.3s"
-              >
+            {page.children?.map((value: any, index: number) => {
+              const IconComponent = iconMap[value.name] || FaAward;
+
+              return (
                 <Box
-                  w={14}
-                  h={14}
-                  rounded="full"
-                  bg="teal.100"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  mb={4}
-                  color="teal.600"
+                  key={index}
+                  p={{ base: 5, md: 6 }}
+                  rounded="lg"
+                  borderWidth={2}
+                  borderColor="gray.200"
+                  bg="white"
+                  boxShadow="sm"
+                  _hover={{
+                    boxShadow: "lg",
+                    transform: "translateY(-5px)",
+                    borderColor: "teal.300",
+                  }}
+                  transition="all 0.3s"
                 >
-                  <Icon as={value.icon} w={8} h={8} />
+                  <Box
+                    w={14}
+                    h={14}
+                    rounded="full"
+                    bg="teal.100"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    mb={4}
+                    color="teal.600"
+                  >
+                    <Icon as={IconComponent} w={8} h={8} />
+                  </Box>
+
+                  <Heading as="h3" fontSize="xl" fontWeight="bold" mb={2}>
+                    {value.name}
+                  </Heading>
+
+                  <Text
+                    fontSize="sm"
+                    color={textMuted}
+                    lineHeight="tall"
+                    dangerouslySetInnerHTML={{ __html: value.details }}
+                  />
                 </Box>
-                <Heading as="h3" fontSize="xl" fontWeight="bold" mb={2}>
-                  {value.title}
-                </Heading>
-                <Text fontSize="sm" color={textMuted} lineHeight="tall">
-                  {value.description}
-                </Text>
-              </Box>
-            ))}
+              );
+            })}
           </Grid>
+
+          {/* View More link at the right of the whole section */}
+          {!showAll && (
+            <Flex
+              w="100%"
+              justify="flex-end"
+              align="center"
+              mt={4}
+              gridColumn={{ base: "1 / -1", lg: "1 / -1" }}
+            >
+              <Link
+                as={RouterLink}
+                to="/about"
+                color="teal.600"
+                fontWeight="semibold"
+                fontSize="lg"
+                _hover={{ textDecoration: "underline", color: "teal.800" }}
+              >
+                View More →
+              </Link>
+            </Flex>
+          )}
         </Grid>
+
+        {/* FULL WIDTH SECTION — Mission + Vision */}
+        {showAll && (
+          <Box maxW="7xl" mx="auto" mt={5}>
+            {/* Mission */}
+            <Heading
+              as="h3"
+              fontSize={{ base: "2xl", md: "3xl" }}
+              mb={4}
+              mt={10}
+              fontWeight="semi-bold"
+              color={useColorModeValue("gray.800", "white")}
+            >
+              Our Mission
+            </Heading>
+            <Text fontSize="lg" color={textMuted} lineHeight="tall" mb={4}>
+              To empower Nepal’s food and agribusiness enterprises with
+              innovative, research-based, and market-oriented solutions that
+              enhance quality, ensure food safety, and promote sustainable
+              business growth.
+            </Text>
+            {/* Vision */}
+            <Heading
+              as="h3"
+              fontSize={{ base: "2xl", md: "3xl" }}
+              mb={4}
+              mt={10}
+              fontWeight="semi-bold"
+              color={useColorModeValue("gray.800", "white")}
+            >
+              Our Vision
+            </Heading>
+            <Text fontSize="lg" color={textMuted} lineHeight="tall">
+              To be Nepal’s most trusted and result-driven partner in food
+              research, training, and consultancy — advancing innovation,
+              compliance, and competitiveness across the food value chain.
+            </Text>
+          </Box>
+        )}
       </Box>
     </Box>
   );

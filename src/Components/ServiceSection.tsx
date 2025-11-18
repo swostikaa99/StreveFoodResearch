@@ -10,6 +10,7 @@ import {
   Icon,
   Button,
   Link,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   FaGraduationCap,
@@ -17,12 +18,33 @@ import {
   FaUsers,
   FaArrowRight,
 } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-import trainingImage from "../assets/training-image.jpg";
-import researchImage from "../assets/research-image.jpg";
-import consultancyImage from "../assets/consultancy-image.jpg";
+interface ChildItem {
+  id: number;
+  name: string;
+  alias: string;
+  details: string;
+  thumb?: string | null;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: {
+    name: string;
+    title: string;
+    details: string;
+    children: {
+      ongoing: ChildItem[];
+      upcoming: ChildItem[];
+      past: ChildItem[];
+      allevents: ChildItem[];
+    };
+  };
+}
 
 interface ServicesSectionProps {
   showAll?: boolean;
@@ -36,66 +58,58 @@ const ServicesSection = ({
   const cardBg = useColorModeValue("white", "gray.800");
   const cardHover = useColorModeValue("gray.50", "gray.700");
   const textMuted = useColorModeValue("gray.600", "gray.300");
-  const navigate = useNavigate();
   const bgGradient = useColorModeValue(
     "linear(to-b, gray.50, teal.50)",
     "linear(to-b, gray.900, teal.900)"
   );
 
-  const services = [
-    {
-      icon: FaGraduationCap,
-      color: "teal.500",
-      title: "Training Programs",
-      description:
-        "Comprehensive food safety and quality management training for industry professionals.",
-      image: trainingImage,
-      features: [
-        "HACCP Certification",
-        "Food Safety Management",
-        "Quality Assurance",
-        "Regulatory Compliance",
-      ],
-    },
-    {
-      icon: FaMicroscope,
-      color: "orange.400",
-      title: "Research & Development",
-      description:
-        "Cutting-edge food science research to advance industry standards and innovation.",
-      image: researchImage,
-      features: [
-        "Product Development",
-        "Nutritional Analysis",
-        "Shelf Life Studies",
-        "Sensory Evaluation",
-      ],
-    },
-    {
-      icon: FaUsers,
-      color: "blue.500",
-      title: "Consultancy Services",
-      description:
-        "Expert guidance on food business operations, compliance, and best practices.",
-      image: consultancyImage,
-      features: [
-        "Regulatory Compliance",
-        "Process Optimization",
-        "Quality Systems",
-        "Capacity Building",
-      ],
-    },
-  ];
+  const navigate = useNavigate();
+
+  const [pageData, setPageData] = useState<ApiResponse["data"] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPage = async () => {
+      try {
+        const res = await axios.get<ApiResponse>(
+          "http://127.0.0.1:8000/api/page/alias/classes"
+        );
+        setPageData(res.data.data);
+      } catch (error) {
+        console.error("Error fetching services data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPage();
+  }, []);
+
+  const items =
+    pageData?.children?.allevents?.map((item, i) => ({
+      icon: [FaGraduationCap, FaMicroscope, FaUsers][i % 3],
+      color: ["teal.500", "orange.400", "blue.500"][i % 3],
+      title: item.name,
+      description: item.details,
+      image: item.thumb || undefined,
+    })) || [];
 
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(services.length / itemsPerPage);
+  const totalPages = Math.ceil(items.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const displayedServices = showAll
     ? showPagination
-      ? services.slice(startIndex, startIndex + itemsPerPage)
-      : services
-    : services.slice(0, 3);
+      ? items.slice(startIndex, startIndex + itemsPerPage)
+      : items
+    : items.slice(0, 3);
+
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" minH="calc(100vh - 80px)">
+        <Spinner size="xl" color="teal.500" />
+      </Flex>
+    );
+  }
 
   return (
     <Box
@@ -120,12 +134,21 @@ const ServicesSection = ({
             Our Services
           </Text>
           <Heading fontSize={{ base: "3xl", md: "5xl" }} color="teal.800">
-            Comprehensive Food Industry Solutions
+            {pageData?.title || "Comprehensive Food Industry Solutions"}
           </Heading>
-          <Text fontSize="lg" color={textMuted} maxW="4xl">
-            From training to research and consultancy, we provide end-to-end
-            support for food businesses in Nepal.
-          </Text>
+          <Box
+            w="full"
+            maxW={{ base: "full", md: "6xl", lg: "7xl" }}
+            mx="auto"
+            px={{ base: 4, md: 10 }}
+          >
+            <Text
+              fontSize="md"
+              color={textMuted}
+              textAlign="justify"
+              dangerouslySetInnerHTML={{ __html: pageData?.details || "" }}
+            />
+          </Box>
         </VStack>
 
         {/* Service Cards */}
@@ -158,7 +181,10 @@ const ServicesSection = ({
               {/* Image Section */}
               <Box position="relative" h="220px" overflow="hidden">
                 <Image
-                  src={service.image}
+                  src={
+                    service.image ||
+                    "https://via.placeholder.com/400x220?text=No+Image"
+                  }
                   alt={service.title}
                   objectFit="cover"
                   w="100%"
@@ -179,34 +205,27 @@ const ServicesSection = ({
               {/* Content Section */}
               <Flex direction="column" p={{ base: 5, md: 6 }} flex="1">
                 <Heading
-                  as="h3"
+                  as="h4"
                   size="lg"
                   mb={2}
                   color={useColorModeValue("gray.800", "white")}
                 >
                   {service.title}
                 </Heading>
-                <Text fontSize="md" color={textMuted} mb={4}>
-                  {service.description}
-                </Text>
-
-                <VStack align="start" spacing={2} mb={6} flex="1">
-                  {service.features.map((feature, idx) => (
-                    <Flex key={idx} align="center" gap={2}>
-                      <Box w={2} h={2} bg="teal.400" borderRadius="full" />
-                      <Text fontSize="sm" color={textMuted}>
-                        {feature}
-                      </Text>
-                    </Flex>
-                  ))}
-                </VStack>
+                <Box
+                  color={textMuted}
+                  fontSize="sm"
+                  mb={4}
+                  noOfLines={6}
+                  dangerouslySetInnerHTML={{ __html: service.description }}
+                />
 
                 <Button
                   variant="outline"
                   w="full"
                   colorScheme="teal"
                   rightIcon={<FaArrowRight />}
-                  onClick={() => navigate(`/ServiceId/${i}`)}
+                  onClick={() => navigate(`/ServiceId/${service.title}`)}
                   mt="auto"
                   _hover={{
                     bg: "teal.500",

@@ -26,7 +26,7 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa";
 
-import logo from "../assets/logo.jpg";
+import logo from "../assets/Strivelogo.jpg";
 
 export default function Footer() {
   // Scroll to top function
@@ -44,6 +44,7 @@ export default function Footer() {
               src={logo}
               alt="Strive Food Research Logo"
               height="95px"
+              // width={"250px"}
               objectFit="contain"
             />
             <Text fontSize="sm" color="gray.200">

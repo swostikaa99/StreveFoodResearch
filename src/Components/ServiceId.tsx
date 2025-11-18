@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Heading,
@@ -9,62 +9,75 @@ import {
   Flex,
   Icon,
   Button,
+  Spinner,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-import trainingImage from "../assets/training-image.jpg";
-import researchImage from "../assets/research-image.jpg";
-import consultancyImage from "../assets/consultancy-image.jpg";
-import { FaGraduationCap, FaMicroscope, FaUsers } from "react-icons/fa";
+interface ChildItem {
+  id: number;
+  name: string;
+  alias: string;
+  details: string;
+  thumb?: string | null;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: {
+    name: string;
+    title: string;
+    details: string;
+    children: {
+      allevents: ChildItem[];
+    };
+  };
+}
 
 const ServiceId = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // "id" is actually the title (alias)
   const navigate = useNavigate();
-
   const textMuted = useColorModeValue("gray.600", "gray.300");
 
-  const services = [
-    {
-      icon: FaGraduationCap,
-      color: "teal.500",
-      title: "Training Programs",
-      description:
-        "Comprehensive food safety and quality management training for industry professionals.",
-      image: trainingImage,
-      details:
-        "Our training programs are designed to enhance professional skills and improve food quality standards in Nepal’s growing food sector. We provide globally recognized certifications, hands-on workshops, and in-depth learning experiences for food safety officers, QA professionals, and entrepreneurs.",
-    },
-    {
-      icon: FaMicroscope,
-      color: "orange.400",
-      title: "Research & Development",
-      description:
-        "Cutting-edge food science research to advance industry standards and innovation.",
-      image: researchImage,
-      details:
-        "Our R&D division focuses on innovative solutions for product development, sensory evaluation, and nutritional analysis. With a focus on evidence-based research, we aim to foster innovation and sustainable growth in the food industry.",
-    },
-    {
-      icon: FaUsers,
-      color: "blue.500",
-      title: "Consultancy Services",
-      description:
-        "Expert guidance on food business operations, compliance, and best practices.",
-      image: consultancyImage,
-      details:
-        "Our consultancy services help businesses meet national and international standards through quality systems, regulatory compliance, and process optimization. We empower food companies with practical insights and long-term strategies for excellence.",
-    },
-  ];
+  const [service, setService] = useState<ChildItem | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const service = services[Number(id)];
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        const res = await axios.get<ApiResponse>(
+          "http://127.0.0.1:8000/api/page/alias/classes"
+        );
+        const allServices = res.data.data.children.allevents;
+        const found = allServices.find(
+          (s) =>
+            s.name.toLowerCase() === decodeURIComponent(id || "").toLowerCase()
+        );
+        setService(found || null);
+      } catch (error) {
+        console.error("Error fetching service:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchService();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" minH="100vh">
+        <Spinner size="xl" color="teal.500" />
+      </Flex>
+    );
+  }
 
   if (!service) {
     return (
       <Box textAlign="center" py={20}>
         <Heading>Service Not Found</Heading>
-        <Button mt={6} colorScheme="teal" onClick={() => navigate("/")}>
+        <Button mt={6} colorScheme="teal" onClick={() => navigate("/services")}>
           Go Back
         </Button>
       </Box>
@@ -97,10 +110,14 @@ const ServiceId = () => {
         rounded="2xl"
         shadow="lg"
       >
+        {/* Image */}
         <Box flex="1">
           <Image
-            src={service.image}
-            alt={service.title}
+            src={
+              service.thumb ||
+              "https://via.placeholder.com/400x300?text=No+Image"
+            }
+            alt={service.name}
             rounded="xl"
             objectFit="cover"
             w="100%"
@@ -108,15 +125,16 @@ const ServiceId = () => {
           />
         </Box>
 
+        {/* Content */}
         <VStack align="start" flex="1" spacing={5}>
-          <Flex align="center" gap={3}>
-            <Icon as={service.icon} boxSize={8} color={service.color} />
-            <Heading fontSize="3xl">{service.title}</Heading>
-          </Flex>
-
-          <Text fontSize="lg" color={textMuted}>
-            {service.details}
-          </Text>
+          <Heading fontSize="3xl" color="teal.700">
+            {service.name}
+          </Heading>
+          <Text
+            fontSize="md"
+            color={textMuted}
+            dangerouslySetInnerHTML={{ __html: service.details }}
+          />
         </VStack>
       </Flex>
     </Box>

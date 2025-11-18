@@ -29,6 +29,8 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => {
         pt={`${headerHeight}px`}
         pb={`${footerHeight}px`}
         px={{ base: 4, md: 10, lg: 20 }}
+        overflow="hidden"
+        fontFamily={"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"}
       >
         {children}
       </Box>
