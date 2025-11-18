@@ -15,8 +15,15 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+interface GalleryImage {
+  id: number;
+  src: string;
+  title: string;
+  description: string;
+}
+
 const ImagesSection = () => {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
 
   const titleCol = useColorModeValue("gray.800", "white");
@@ -30,15 +37,25 @@ const ImagesSection = () => {
         const res = await fetch("http://127.0.0.1:8000/api/page/alias/gallery");
         const json = await res.json();
 
-        if (json.success && json.data?.children) {
-          const apiImages = json.data.children.map((item) => ({
-            id: item.id,
-            src: item.thumb,
-            title: item.name,
-            description: item.details.replace(/<[^>]+>/g, ""), // remove HTML tags
-          }));
+        if (json.success && Array.isArray(json.data?.children)) {
+          const apiImages: GalleryImage[] = json.data.children.map(
+            (item: any) => {
+              // Handle multiple images separated by commas
+              const firstImage =
+                typeof item.thumb === "string" ? item.thumb.split(",")[0] : "";
 
-          setImages(apiImages.slice(0, 3)); // same as before — show only first 3
+              return {
+                id: item.id,
+                src: firstImage,
+                title: item.name,
+                description: item.details
+                  ? item.details.replace(/<[^>]+>/g, "")
+                  : "",
+              };
+            }
+          );
+
+          setImages(apiImages.slice(0, 3)); // show only first 3
         }
       } catch (err) {
         console.error("Error loading gallery:", err);
@@ -119,7 +136,6 @@ const ImagesSection = () => {
           ))}
         </SimpleGrid>
 
-        {/* View More Link */}
         <Flex justify="center" mt={8}>
           <Link
             as={RouterLink}

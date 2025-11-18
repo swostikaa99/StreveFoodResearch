@@ -7,7 +7,6 @@ import {
   Icon,
   Image,
   useColorModeValue,
-  Divider,
   Spinner,
   Modal,
   ModalOverlay,
@@ -17,10 +16,8 @@ import {
   ModalCloseButton,
   useDisclosure,
   Link,
-  Button,
 } from "@chakra-ui/react";
 import { FaBriefcase } from "react-icons/fa";
-import PageWrapper from "../Layout/Pagewrapper";
 import axiosInstance from "../api/axios";
 import { motion } from "framer-motion";
 import { Link as RouterLink } from "react-router-dom";
@@ -29,7 +26,7 @@ interface Project {
   title: string;
   project: string;
   province?: string;
-  detailsHtml: string; // full HTML
+  detailsHtml: string;
   image?: string | null;
 }
 
@@ -39,8 +36,8 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
-  const [sectionTitle, setSectionTitle] = useState("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -56,16 +53,17 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
         const page = response.data?.data;
 
         setTitle(page?.title || "Our Projects");
-        setSectionTitle(page?.meta_name || "Private Sector Consultations");
 
         if (Array.isArray(page?.children)) {
-          const mappedProjects = page.children.map((item: any) => ({
+          const mappedProjects: Project[] = page.children.map((item: any) => ({
             title: item.name,
             project: item.meta_name || "",
             province: item.meta_description || "",
             detailsHtml: item.details || "",
             image:
-              item.thumb && typeof item.thumb === "string" ? item.thumb : null,
+              item.thumb && typeof item.thumb === "string"
+                ? item.thumb.split(",")[0]
+                : null,
           }));
           setProjects(mappedProjects);
         }
@@ -89,15 +87,15 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
 
   const displayedProjects = limit ? projects.slice(0, limit) : projects;
 
-  const openModal = (project: Project) => {
+  const openModal = (project: Project, idx: number) => {
     setSelectedProject(project);
+    setSelectedIndex(idx);
     onOpen();
   };
 
   return (
     <Box w="100%" py={{ base: 12, md: 20 }} px={{ base: 6, md: 12 }}>
       <Box maxW="7xl" mx="auto">
-        {/* MAIN TITLE */}
         <Heading
           fontSize={{ base: "3xl", md: "5xl" }}
           fontWeight="bold"
@@ -108,7 +106,6 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
           {title}
         </Heading>
 
-        {/* PROJECT GRID */}
         <Grid
           templateColumns={{
             base: "1fr",
@@ -126,7 +123,6 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
               borderColor={cardBorder}
               rounded="xl"
               boxShadow="md"
-              transition="0.3s"
               _hover={{
                 transform: "translateY(-6px)",
                 boxShadow: "xl",
@@ -134,9 +130,12 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
                 cursor: "pointer",
               }}
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1, duration: 0.5 }}
-              onClick={() => openModal(item)}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { delay: idx * 0.1, duration: 0.5 },
+              }}
+              onClick={() => openModal(item, idx)}
             >
               <Box
                 w={{ base: 24, md: 32 }}
@@ -185,7 +184,6 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
           ))}
         </Grid>
 
-        {/* VIEW MORE BUTTON */}
         {limit && projects.length > limit && (
           <Flex justify="right" mt={8}>
             <Link
@@ -200,7 +198,6 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
           </Flex>
         )}
 
-        {/* MODAL */}
         {selectedProject && (
           <Modal
             isOpen={isOpen}
@@ -212,9 +209,11 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
             <ModalOverlay />
             <ModalContent
               as={motion.div}
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { delay: selectedIndex * 0.1, duration: 0.5 },
+              }}
             >
               <ModalHeader fontWeight="bold">
                 {selectedProject.title}
@@ -242,7 +241,6 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
                   </Flex>
                 )}
 
-                {/* FULL HTML DETAILS */}
                 <Box
                   className="project-details"
                   sx={{
@@ -252,16 +250,10 @@ const ProjectSection = ({ limit }: { limit?: number }) => {
                       lineHeight: 1.8,
                       marginBottom: "0.75rem",
                       fontSize: "18px",
-                      "@media (min-width: 48em)": {
-                        fontSize: "20px",
-                      },
+                      "@media (min-width: 48em)": { fontSize: "20px" },
                     },
-                    "& li": {
-                      paddingLeft: "0.5rem",
-                    },
-                    "& li::marker": {
-                      color: "teal.500",
-                    },
+                    "& li": { paddingLeft: "0.5rem" },
+                    "& li::marker": { color: "teal.500" },
                   }}
                   dangerouslySetInnerHTML={{
                     __html: selectedProject.detailsHtml,

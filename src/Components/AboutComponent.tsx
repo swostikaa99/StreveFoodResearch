@@ -29,20 +29,20 @@ const iconMap: any = {
 };
 
 const About = ({ showAll = false }: AboutProps) => {
+  // ======= ALWAYS-DECLARED HOOKS (no conditionals) =========
   const [page, setPage] = useState<any>(null);
   const [whoWeAre, setWhoWeAre] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loadingWho, setLoadingWho] = useState(true);
 
+  // Chakra hooks / context must be here (top-level)
   const textMuted = useColorModeValue("gray.600", "gray.300");
   const bgGradient = useColorModeValue(
     "linear(to-b, gray.50, teal.50)",
     "linear(to-b, gray.900, teal.900)"
   );
 
-  // ===========================
-  //      FETCH ABOUT DATA
-  // ===========================
+  // data fetching hooks (also top-level)
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/page/alias/about-us")
@@ -64,14 +64,18 @@ const About = ({ showAll = false }: AboutProps) => {
       .catch(() => setLoadingWho(false));
   }, []);
 
-  if (loading || loadingWho)
+  // safe early returns AFTER all hooks are declared
+  if (loading || loadingWho) {
     return (
       <Flex w="100%" justify="center" py={20}>
         <Spinner size="xl" color="teal.500" />
       </Flex>
     );
+  }
 
-  if (!page || !whoWeAre) return null;
+  if (!page || !whoWeAre) {
+    return null;
+  }
 
   return (
     <Box
