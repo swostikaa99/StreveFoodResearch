@@ -81,7 +81,7 @@ const Impacts = () => {
   const borderCol = useColorModeValue("gray.200", "gray.700");
 
   return (
-    <Box minH="100vh" bgGradient={bgGradient} py={{ base: 12, md: 16 }}>
+    <Box bgGradient={bgGradient} py={{ base: 12, md: 16 }}>
       <Container maxW="7xl">
         {/* Header */}
         <Box textAlign="center" mb={12} px={{ base: 4, md: 0 }}>

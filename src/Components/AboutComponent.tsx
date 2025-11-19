@@ -14,10 +14,13 @@ import { Link as RouterLink } from "react-router-dom";
 import { FaAward, FaBullseye, FaUsers, FaChartLine } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 interface AboutProps {
   showAll?: boolean; // true = full About page
 }
+
+const MotionBox = motion(Box);
 
 const iconMap: any = {
   Integrity: FaAward,
@@ -29,20 +32,17 @@ const iconMap: any = {
 };
 
 const About = ({ showAll = false }: AboutProps) => {
-  // ======= ALWAYS-DECLARED HOOKS (no conditionals) =========
   const [page, setPage] = useState<any>(null);
   const [whoWeAre, setWhoWeAre] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loadingWho, setLoadingWho] = useState(true);
 
-  // Chakra hooks / context must be here (top-level)
   const textMuted = useColorModeValue("gray.600", "gray.300");
   const bgGradient = useColorModeValue(
     "linear(to-b, gray.50, teal.50)",
     "linear(to-b, gray.900, teal.900)"
   );
 
-  // data fetching hooks (also top-level)
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/page/alias/about-us")
@@ -53,7 +53,6 @@ const About = ({ showAll = false }: AboutProps) => {
       .catch(() => setLoading(false));
   }, []);
 
-  // Fetch Who We Are data
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/page/alias/who-we-are")
@@ -64,7 +63,6 @@ const About = ({ showAll = false }: AboutProps) => {
       .catch(() => setLoadingWho(false));
   }, []);
 
-  // safe early returns AFTER all hooks are declared
   if (loading || loadingWho) {
     return (
       <Flex w="100%" justify="center" py={20}>
@@ -73,9 +71,7 @@ const About = ({ showAll = false }: AboutProps) => {
     );
   }
 
-  if (!page || !whoWeAre) {
-    return null;
-  }
+  if (!page || !whoWeAre) return null;
 
   return (
     <Box
@@ -88,7 +84,6 @@ const About = ({ showAll = false }: AboutProps) => {
       px={{ base: 6, md: 10 }}
     >
       <Box maxW="7xl" mx="auto" w="full">
-        {/* GRID LAYOUT */}
         <Grid
           templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }}
           gap={{ base: 10, lg: 16 }}
@@ -96,7 +91,12 @@ const About = ({ showAll = false }: AboutProps) => {
           position="relative"
         >
           {/* LEFT SIDE */}
-          <Box>
+          <MotionBox
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 1.6 }}
+          >
             <Box
               display="inline-block"
               px={4}
@@ -111,7 +111,6 @@ const About = ({ showAll = false }: AboutProps) => {
               About Us
             </Box>
 
-            {/* API Title */}
             <Heading
               as="h2"
               fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
@@ -122,7 +121,6 @@ const About = ({ showAll = false }: AboutProps) => {
               {page.title}
             </Heading>
 
-            {/* API HTML details */}
             <Box
               fontSize="lg"
               color={textMuted}
@@ -131,28 +129,24 @@ const About = ({ showAll = false }: AboutProps) => {
               dangerouslySetInnerHTML={{ __html: page.details }}
             />
 
-            {/* ONLY FIRST PARAGRAPH OF "WHO WE ARE" */}
-            <Box>
-              <Heading
-                as="h3"
-                fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
-                fontWeight="semi-bold"
-                mb={6}
-                color={useColorModeValue("gray.800", "white")}
-              >
-                {whoWeAre.title}
-              </Heading>
+            <Heading
+              as="h3"
+              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+              fontWeight="semi-bold"
+              mb={6}
+              color={useColorModeValue("gray.800", "white")}
+            >
+              {whoWeAre.title}
+            </Heading>
 
-              {/* Render all paragraphs from API */}
-              <Box
-                fontSize="lg"
-                color={textMuted}
-                mb={2}
-                lineHeight="tall"
-                dangerouslySetInnerHTML={{ __html: whoWeAre.details }}
-              />
-            </Box>
-          </Box>
+            <Box
+              fontSize="lg"
+              color={textMuted}
+              mb={2}
+              lineHeight="tall"
+              dangerouslySetInnerHTML={{ __html: whoWeAre.details }}
+            />
+          </MotionBox>
 
           {/* RIGHT SIDE ICON GRID */}
           <Grid
@@ -161,53 +155,58 @@ const About = ({ showAll = false }: AboutProps) => {
           >
             {page.children?.map((value: any, index: number) => {
               const IconComponent = iconMap[value.name] || FaAward;
-
               return (
-                <Box
+                <MotionBox
                   key={index}
-                  p={{ base: 5, md: 6 }}
-                  rounded="lg"
-                  borderWidth={2}
-                  borderColor="gray.200"
-                  bg="white"
-                  boxShadow="sm"
-                  _hover={{
-                    boxShadow: "lg",
-                    transform: "translateY(-5px)",
-                    borderColor: "teal.300",
-                  }}
-                  transition="all 0.3s"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.5, delay: index * 1.15 }}
                 >
                   <Box
-                    w={14}
-                    h={14}
-                    rounded="full"
-                    bg="teal.100"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    mb={4}
-                    color="teal.600"
+                    p={{ base: 5, md: 6 }}
+                    rounded="lg"
+                    borderWidth={2}
+                    borderColor="gray.200"
+                    bg="white"
+                    boxShadow="sm"
+                    _hover={{
+                      boxShadow: "lg",
+                      transform: "translateY(-5px)",
+                      borderColor: "teal.300",
+                    }}
+                    transition="all 0.3s"
                   >
-                    <Icon as={IconComponent} w={8} h={8} />
+                    <Box
+                      w={14}
+                      h={14}
+                      rounded="full"
+                      bg="teal.100"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      mb={4}
+                      color="teal.600"
+                    >
+                      <Icon as={IconComponent} w={8} h={8} />
+                    </Box>
+
+                    <Heading as="h3" fontSize="xl" fontWeight="bold" mb={2}>
+                      {value.name}
+                    </Heading>
+
+                    <Text
+                      fontSize="sm"
+                      color={textMuted}
+                      lineHeight="tall"
+                      dangerouslySetInnerHTML={{ __html: value.details }}
+                    />
                   </Box>
-
-                  <Heading as="h3" fontSize="xl" fontWeight="bold" mb={2}>
-                    {value.name}
-                  </Heading>
-
-                  <Text
-                    fontSize="sm"
-                    color={textMuted}
-                    lineHeight="tall"
-                    dangerouslySetInnerHTML={{ __html: value.details }}
-                  />
-                </Box>
+                </MotionBox>
               );
             })}
           </Grid>
 
-          {/* View More link at the right of the whole section */}
           {!showAll && (
             <Flex
               w="100%"
@@ -230,9 +229,13 @@ const About = ({ showAll = false }: AboutProps) => {
           )}
         </Grid>
 
-        {/* FULL WIDTH SECTION — Mission + Vision */}
         {showAll && (
-          <Box maxW="7xl" mx="auto" mt={5}>
+          <MotionBox
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
+          >
             {/* Mission */}
             <Heading
               as="h3"
@@ -250,6 +253,7 @@ const About = ({ showAll = false }: AboutProps) => {
               enhance quality, ensure food safety, and promote sustainable
               business growth.
             </Text>
+
             {/* Vision */}
             <Heading
               as="h3"
@@ -266,7 +270,7 @@ const About = ({ showAll = false }: AboutProps) => {
               research, training, and consultancy — advancing innovation,
               compliance, and competitiveness across the food value chain.
             </Text>
-          </Box>
+          </MotionBox>
         )}
       </Box>
     </Box>

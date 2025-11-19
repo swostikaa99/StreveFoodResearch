@@ -13,14 +13,15 @@ import Blogs from "./Pages/Blogs";
 import Testimonial from "./Pages/Testimonial";
 import Impacts from "./Pages/Impacts";
 import ServiceId from "./Components/ServiceId";
-
+import { LoadingProvider } from "./Context/LoadingContext";
 function App() {
   return (
     <div>
       <Box>
         {/* <Header /> */}
-
-        <AllRoutes />
+        <LoadingProvider>
+          <AllRoutes />
+        </LoadingProvider>
         {/* <Home /> */}
         {/* <Footer /> */}
       </Box>

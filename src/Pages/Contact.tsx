@@ -13,17 +13,18 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import PageWrapper from "../Layout/Pagewrapper";
+import { motion } from "framer-motion";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+// Create a motion wrapper for Chakra Box
+const MotionBox = motion.create(Box);
 
 const Contact = () => {
   const toast = useToast();
 
-  // API settings state
   const [settings, setSettings] = useState<any>(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
-
-  // Form state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -34,10 +35,8 @@ const Contact = () => {
     model: "",
     model_id: "",
   });
-
   const [loading, setLoading] = useState(false);
 
-  // Fetch settings from API
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -170,13 +169,10 @@ const Contact = () => {
     );
   }
 
-  // Fallback info (if API data missing)
   const phone = settings?.phone || settings?.phone_number || "+977 9800000000";
   const address = settings?.address || "Baneshwor, Kathmandu, Nepal";
   const email =
     settings?.email || settings?.email_address || "info@strivefoodresearch.com";
-
-  // ✅ Static location embed (Baneshwor, Kathmandu)
   const locationUrl =
     settings?.location_url ||
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.113383783634!2d85.335192!3d27.693519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb198d1dfe23f5%3A0x1f89bb0136ff94d1!2sBaneshwor%2C%20Kathmandu!5e0!3m2!1sen!2snp!4v1709968890000!5m2!1sen!2snp";
@@ -191,7 +187,13 @@ const Contact = () => {
           justify="center"
         >
           {/* Left: Google Map */}
-          <Box flex="1" minW="300px">
+          <MotionBox
+            flex="1"
+            minW="300px"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.8 }}
+          >
             <Heading size="lg" mb={4} color="blue.800">
               Find Us Here
             </Heading>
@@ -213,16 +215,19 @@ const Contact = () => {
               <Text color="gray.700">{address}</Text>
               <Text color="blue.600">{email}</Text>
             </VStack>
-          </Box>
+          </MotionBox>
 
           {/* Right: Contact Form */}
-          <Box
+          <MotionBox
             flex="1"
             p={8}
             bg="white"
             borderRadius="lg"
             boxShadow="lg"
             w="100%"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
           >
             <Heading as="h3" size="lg" mb={6} color="blue.800">
               Contact Us
@@ -295,7 +300,7 @@ const Contact = () => {
             >
               Send Message
             </Button>
-          </Box>
+          </MotionBox>
         </Flex>
       </Box>
     </PageWrapper>

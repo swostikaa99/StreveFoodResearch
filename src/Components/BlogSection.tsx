@@ -17,6 +17,7 @@ import {
 import { FaClock, FaUser, FaCalendarAlt } from "react-icons/fa";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import img1 from "../assets/research-1.jpg";
 import img2 from "../assets/research-2.jpg";
@@ -26,9 +27,11 @@ import img5 from "../assets/research-5.jpg";
 import img6 from "../assets/research-6.jpg";
 
 interface BlogsSectionProps {
-  showAll?: boolean; // true = blogs page
-  showPagination?: boolean; // true = enable pagination
+  showAll?: boolean;
+  showPagination?: boolean;
 }
+
+const MotionBox = motion(Box);
 
 const BlogsSection = ({
   showAll = false,
@@ -162,22 +165,25 @@ const BlogsSection = ({
           </Text>
         </Box>
 
-        {/* Blog Grid */}
+        {/* Blog Grid with animation */}
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={8}>
-          {displayedPosts.map((post) => (
-            <Box
+          {displayedPosts.map((post, i) => (
+            <MotionBox
               key={post.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 1.5, delay: i * 0.15 }}
               borderWidth="1px"
               borderColor={borderCol}
               rounded="lg"
               overflow="hidden"
               bg={cardBg}
-              transition="all 0.3s ease"
-              _hover={{ transform: "translateY(-5px)", boxShadow: "lg" }}
               display="flex"
               flexDirection="column"
               justifyContent="space-between"
-              h="100%" // ensures card stretches evenly
+              h="100%"
+              _hover={{ transform: "translateY(-5px)", boxShadow: "lg" }}
             >
               <Image
                 src={post.image}
@@ -198,7 +204,6 @@ const BlogsSection = ({
                     </HStack>
                   </HStack>
 
-                  {/* Fixed height container for title & description */}
                   <Box flex="1" minH="150px">
                     <Heading
                       as="h3"
@@ -234,11 +239,11 @@ const BlogsSection = ({
                   </HStack>
                 </VStack>
               </Box>
-            </Box>
+            </MotionBox>
           ))}
         </SimpleGrid>
 
-        {/* Pagination on Blogs Page */}
+        {/* Pagination */}
         {showPagination && totalPages > 1 && (
           <Flex justify="center" align="center" mt={10} gap={3}>
             <Button
@@ -259,7 +264,7 @@ const BlogsSection = ({
           </Flex>
         )}
 
-        {/* View More link only on Home Page */}
+        {/* View More link */}
         {!showAll && (
           <Flex justify="right" mt={12}>
             <Link

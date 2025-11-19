@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Button,
@@ -17,6 +18,9 @@ import {
   FaGraduationCap,
   FaBuilding,
 } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+
 import HeroBackground from "../assets/hero-background.jpg";
 import About from "../Components/AboutComponent";
 import ServicesSection from "../Components/ServiceSection";
@@ -29,14 +33,22 @@ import Header from "../Layout/Header";
 import OurTeams from "../Components/OurTeams";
 import ProjectSection from "../Components/ProjectSection";
 
-// FIX: Define consistent header and footer heights
-const headerHeight = 80; // adjust if needed
-const footerHeight = 200; // adjust if needed
+const MotionBox = motion.create(Box);
 
-const Hero = () => {
+const headerHeight = 80;
+const footerHeight = 90;
+
+const Hero: React.FC = () => {
+  const navigate = useNavigate();
+
+  const stats = [
+    { icon: FaFlask, number: "500+", label: "Research Projects" },
+    { icon: FaGraduationCap, number: "1000+", label: "Professionals Trained" },
+    { icon: FaBuilding, number: "50+", label: "Partner Organizations" },
+  ];
+
   return (
     <Box overflowX="hidden" w="100vw" position="relative">
-      {/* HEADER */}
       <Header />
 
       {/* MAIN WRAPPER */}
@@ -73,7 +85,7 @@ const Hero = () => {
             bottom={0}
             w="100%"
             h="100%"
-            zIndex="0"
+            zIndex={0}
           />
 
           {/* Overlay */}
@@ -84,17 +96,20 @@ const Hero = () => {
             right={0}
             bottom={0}
             bgGradient="linear(to-r, rgba(0, 100, 80, 0.9), rgba(0, 120, 90, 0.8), transparent)"
-            zIndex="1"
+            zIndex={1}
           />
 
           {/* HERO CONTENT */}
-          <Box
+          <MotionBox
             position="relative"
-            zIndex="2"
+            zIndex={2}
             color="white"
             maxW="7xl"
             mx="auto"
             w="full"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 1 }}
+            transition={{ duration: 1.8 }}
           >
             <Stack
               spacing={8}
@@ -130,6 +145,7 @@ const Hero = () => {
                     transform: "translateY(-2px)",
                     boxShadow: "lg",
                   }}
+                  onClick={() => navigate("/services")}
                   size="lg"
                   w={{ base: "100%", sm: "auto" }}
                 >
@@ -143,6 +159,7 @@ const Hero = () => {
                   _hover={{ bg: "white", color: "teal.700" }}
                   size="lg"
                   w={{ base: "100%", sm: "auto" }}
+                  onClick={() => navigate("/contact")}
                 >
                   Contact Us
                 </Button>
@@ -158,22 +175,15 @@ const Hero = () => {
               }}
               gap={6}
               mt={16}
-              overflow="hidden"
             >
-              {[
-                { icon: FaFlask, number: "500+", label: "Research Projects" },
-                {
-                  icon: FaGraduationCap,
-                  number: "1000+",
-                  label: "Professionals Trained",
-                },
-                {
-                  icon: FaBuilding,
-                  number: "50+",
-                  label: "Partner Organizations",
-                },
-              ].map((stat, i) => (
-                <GridItem key={i}>
+              {stats.map((stat, i) => (
+                <MotionBox
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.9, delay: i * 1.2 }}
+                >
                   <Box
                     bg="whiteAlpha.200"
                     backdropFilter="blur(6px)"
@@ -184,7 +194,6 @@ const Hero = () => {
                     _hover={{ bg: "whiteAlpha.300" }}
                     transition="0.3s"
                     textAlign="center"
-                    overflow="hidden"
                   >
                     <Icon
                       as={stat.icon}
@@ -197,12 +206,13 @@ const Hero = () => {
                     </Text>
                     <Text color="whiteAlpha.800">{stat.label}</Text>
                   </Box>
-                </GridItem>
+                </MotionBox>
               ))}
             </Grid>
-          </Box>
+          </MotionBox>
         </Box>
 
+        {/* OTHER SECTIONS */}
         <About />
         <ServicesSection showAll={false} showPagination={false} />
         <BlogsSection showAll={false} showPagination={false} />

@@ -21,6 +21,7 @@ import {
 import { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 interface ChildItem {
   id: number;
@@ -51,6 +52,8 @@ interface ServicesSectionProps {
   showPagination?: boolean;
 }
 
+const MotionBox = motion(Box);
+
 const ServicesSection = ({
   showAll = false,
   showPagination = false,
@@ -64,7 +67,6 @@ const ServicesSection = ({
   );
 
   const navigate = useNavigate();
-
   const [pageData, setPageData] = useState<ApiResponse["data"] | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -84,12 +86,19 @@ const ServicesSection = ({
     fetchPage();
   }, []);
 
+  const stripHtml = (html?: string) =>
+    html
+      ? new DOMParser()
+          .parseFromString(html, "text/html")
+          .body.textContent?.trim() || ""
+      : "";
+
   const items =
     pageData?.children?.allevents?.map((item, i) => ({
       icon: [FaGraduationCap, FaMicroscope, FaUsers][i % 3],
       color: ["teal.500", "orange.400", "blue.500"][i % 3],
       title: item.name,
-      description: item.details,
+      description: stripHtml(item.details),
       image: item.thumb || undefined,
     })) || [];
 
@@ -112,12 +121,16 @@ const ServicesSection = ({
   }
 
   return (
-    <Box
+    <MotionBox
       as="section"
       bgGradient={bgGradient}
       minH="calc(100vh - 80px)"
       p={{ base: 10, md: 20 }}
       w="100%"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 1.8 }}
     >
       <Box maxW="7xl" mx="auto" w="full">
         {/* Section Header */}
@@ -161,82 +174,89 @@ const ServicesSection = ({
           gap={10}
         >
           {displayedServices.map((service, i) => (
-            <Flex
+            <MotionBox
               key={i}
-              direction="column"
-              bg={cardBg}
-              rounded="xl"
-              shadow="md"
-              borderWidth="1px"
-              overflow="hidden"
-              transition="all 0.3s"
-              _hover={{
-                shadow: "xl",
-                borderColor: "teal.300",
-                transform: "translateY(-5px)",
-                bg: cardHover,
-              }}
-              h="100%"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 1.5, delay: i * 0.15 }}
             >
-              {/* Image Section */}
-              <Box position="relative" h="220px" overflow="hidden">
-                <Image
-                  src={
-                    service.image ||
-                    "https://via.placeholder.com/400x220?text=No+Image"
-                  }
-                  alt={service.title}
-                  objectFit="cover"
-                  w="100%"
-                  h="100%"
-                  transition="transform 0.5s"
-                  _hover={{ transform: "scale(1.08)" }}
-                />
-                <Box
-                  position="absolute"
-                  inset="0"
-                  bgGradient="linear(to-t, rgba(0,0,0,0.6), transparent)"
-                />
-                <Box position="absolute" bottom={4} left={4}>
-                  <Icon as={service.icon} boxSize={10} color={service.color} />
+              <Flex
+                direction="column"
+                bg={cardBg}
+                rounded="xl"
+                shadow="md"
+                borderWidth="1px"
+                overflow="hidden"
+                transition="all 0.3s"
+                _hover={{
+                  shadow: "xl",
+                  borderColor: "teal.300",
+                  transform: "translateY(-5px)",
+                  bg: cardHover,
+                }}
+                h="100%"
+              >
+                {/* Image Section */}
+                <Box position="relative" h="220px" overflow="hidden">
+                  <Image
+                    src={
+                      service.image ||
+                      "https://via.placeholder.com/400x220?text=No+Image"
+                    }
+                    alt={service.title}
+                    objectFit="cover"
+                    w="100%"
+                    h="100%"
+                    transition="transform 0.5s"
+                    _hover={{ transform: "scale(1.08)" }}
+                  />
+                  <Box
+                    position="absolute"
+                    inset="0"
+                    bgGradient="linear(to-t, rgba(0,0,0,0.6), transparent)"
+                  />
+                  <Box position="absolute" bottom={4} left={4}>
+                    <Icon
+                      as={service.icon}
+                      boxSize={10}
+                      color={service.color}
+                    />
+                  </Box>
                 </Box>
-              </Box>
 
-              {/* Content Section */}
-              <Flex direction="column" p={{ base: 5, md: 6 }} flex="1">
-                <Heading
-                  as="h4"
-                  size="lg"
-                  mb={2}
-                  color={useColorModeValue("gray.800", "white")}
-                >
-                  {service.title}
-                </Heading>
-                <Box
-                  color={textMuted}
-                  fontSize="sm"
-                  mb={4}
-                  noOfLines={6}
-                  dangerouslySetInnerHTML={{ __html: service.description }}
-                />
+                {/* Content Section */}
+                <Flex direction="column" p={{ base: 5, md: 6 }} flex="1">
+                  <Text
+                    fontSize={{ base: "xl", md: "2xl" }}
+                    fontWeight="bold"
+                    mb={2}
+                    color={useColorModeValue("gray.800", "white")}
+                  >
+                    {service.title}
+                  </Text>
+                  <Text color={textMuted} fontSize="md" mb={4} noOfLines={3}>
+                    {service.description}
+                  </Text>
 
-                <Button
-                  variant="outline"
-                  w="full"
-                  colorScheme="teal"
-                  rightIcon={<FaArrowRight />}
-                  onClick={() => navigate(`/ServiceId/${service.title}`)}
-                  mt="auto"
-                  _hover={{
-                    bg: "teal.500",
-                    color: "white",
-                    transform: "translateY(-2px)",
-                  }}
-                >
-                  Learn More
-                </Button>
+                  <Button
+                    variant="outline"
+                    w="full"
+                    colorScheme="teal"
+                    rightIcon={<FaArrowRight />}
+                    onClick={() => navigate(`/ServiceId/${service.title}`)}
+                    mt="auto"
+                    _hover={{
+                      bg: "teal.500",
+                      color: "white",
+                      transform: "translateY(-2px)",
+                    }}
+                  >
+                    Learn More
+                  </Button>
+                </Flex>
               </Flex>
-            </Flex>
+            </MotionBox>
           ))}
         </Grid>
 
@@ -277,7 +297,7 @@ const ServicesSection = ({
           </Flex>
         )}
       </Box>
-    </Box>
+    </MotionBox>
   );
 };
 

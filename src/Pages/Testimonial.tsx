@@ -76,7 +76,7 @@ const Testimonial = () => {
   };
 
   return (
-    <Box minH="100vh" bgGradient={bgGradient} pt="80px">
+    <Box bgGradient={bgGradient} pt="80px">
       <Container maxW="7xl" px={{ base: 6, md: 10 }}>
         {/* Header */}
         <Box textAlign="center" mb={10}>
