@@ -103,7 +103,7 @@ export default function Footer() {
               <HStack align="start">
                 <Icon as={FaMapMarkerAlt} color="orange.400" mt={1} />
                 <Text>
-                  55 Main Street, 2nd Block, <br /> Melbourne, Australia
+                  Biratnagar, Koshi Province, <br /> Nepal
                 </Text>
               </HStack>
               <HStack>
@@ -112,7 +112,7 @@ export default function Footer() {
               </HStack>
               <HStack>
                 <Icon as={FaPhoneAlt} color="orange.400" />
-                <Text>+000 (123) 44 55</Text>
+                <Text>+977 9841896149</Text>
               </HStack>
             </VStack>
           </GridItem>

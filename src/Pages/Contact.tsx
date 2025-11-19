@@ -169,8 +169,8 @@ const Contact = () => {
     );
   }
 
-  const phone = settings?.phone || settings?.phone_number || "+977 9800000000";
-  const address = settings?.address || "Baneshwor, Kathmandu, Nepal";
+  const phone = settings?.phone || settings?.phone_number || "+977 9841896149";
+  const address = settings?.address || "Biratnagar, Koshi Province, Nepal";
   const email =
     settings?.email || settings?.email_address || "info@strivefoodresearch.com";
   const locationUrl =
