@@ -11,6 +11,8 @@ import Impacts from "./Pages/Impacts";
 import ServiceId from "./Components/ServiceId";
 import OurTeamPage from "./Pages/OurTeamPage";
 import Project from "./Pages/Project";
+import BlogId from "./Components/BlogId";
+import TeamId from "./Components/TeamId";
 // import ImageCategoryPage from "./Pages/ImageCategoryPage";
 // import ProjectId from "./Components/ProjectId";
 export default function AllRoutes() {
@@ -28,8 +30,11 @@ export default function AllRoutes() {
         <Route path="/Testimonial" element={<Testimonial />} />
         <Route path="/Impacts" element={<Impacts />} />
         <Route path="/our-team-page" element={<OurTeamPage />} />
+        <Route path="/our-team-page/:alias" element={<TeamId />} />
         <Route path="/ServiceId/:id" element={<ServiceId />} />
         <Route path="/project" element={<Project />} />
+        <Route path="/blogs/:id" element={<BlogId />} />
+
         {/* <Route path="/images/:alias" element={<ImageCategoryPage />} /> */}
 
         {/* <Route path="/project/:alias" element={<ProjectId />} /> */}

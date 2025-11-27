@@ -70,7 +70,9 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <Button colorScheme="teal">Get Started</Button>
+            <Button colorScheme="teal" onClick={() => navigate("/contact")}>
+              Get Started
+            </Button>
           </HStack>
 
           {/* Mobile Menu Button */}
@@ -109,14 +111,7 @@ const Header = () => {
             </Link>
           ))}
 
-          <Button
-            colorScheme="teal"
-            w="80%"
-            onClick={() => {
-              onToggle();
-              navigate("/contact");
-            }}
-          >
+          <Button colorScheme="teal" onClick={() => navigate("/contact")}>
             Get Started
           </Button>
         </VStack>

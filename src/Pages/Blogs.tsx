@@ -1,4 +1,4 @@
-import BlogsSection from "../Components/BlogSection";
+import BlogsSection from "../Components/BlogsSection";
 import PageWrapper from "../Layout/Pagewrapper";
 
 const BlogsPage = () => {

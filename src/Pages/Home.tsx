@@ -26,7 +26,7 @@ import About from "../Components/AboutComponent";
 import ServicesSection from "../Components/ServiceSection";
 import Testimonial from "./Testimonial";
 import Impacts from "./Impacts";
-import BlogsSection from "../Components/BlogSection";
+import BlogsSection from "../Components/BlogsSection";
 import ImagePage from "./Image";
 import Footer from "../Layout/Footer";
 import Header from "../Layout/Header";

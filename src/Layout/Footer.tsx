@@ -134,7 +134,15 @@ export default function Footer() {
             textAlign="center"
           >
             © {new Date().getFullYear()} Strive Food Research & Training. All
-            rights reserved.
+            rights reserved | Powered by{" "}
+            <Link
+              href="https://anoopinnovations.com"
+              isExternal
+              color="blue.300"
+              _hover={{ textDecoration: "underline", color: "blue.400" }}
+            >
+              Anoop Innovations
+            </Link>
           </Text>
 
           <Button
