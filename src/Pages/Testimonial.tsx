@@ -147,7 +147,12 @@ const Testimonial = () => {
                     h={6}
                     opacity={0.8}
                   />
-                  <Text fontSize="md" color={textCol} lineHeight="tall">
+                  <Text
+                    fontSize="md"
+                    fontStyle="italic"
+                    color={textCol}
+                    lineHeight="tall"
+                  >
                     “{item.feedback}”
                   </Text>
 
